@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as cookieParser from 'cookie-parser';
 import { ValidationPipe, Logger as NestjsLogger } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 async function bootstrap() {
@@ -8,6 +9,11 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
   app.useLogger(app.get(Logger));
+  app.use(cookieParser());
+
+  app.enableCors({
+    origin: ['http://localhost:5173'],
+  });
 
   const configService = app.get(ConfigService);
   await app.listen(configService.get('SERVER_PORT'), () => {
